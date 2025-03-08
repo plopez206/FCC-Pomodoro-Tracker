@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import './App.css';
-import { FaArrowUp, FaArrowDown } from 'react-icons/fa6'; // Usando los iconos estilizados de FontAwesome 6
+import { FaArrowUp, FaArrowDown } from 'react-icons/fa6';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import beepSound from './assets/nokia_alarma.mp3';
 
@@ -53,6 +53,11 @@ function App() {
     };
   }, [isRunning, settings]);
 
+  // Actualiza el temporizador inmediatamente al modificar el tiempo
+  useEffect(() => {
+    setSecondsLeft(isSession ? settings.session * 60 : settings.breakTime * 60);
+  }, [settings, isSession]);
+
   const handleSkip = () => {
     beepAudio.current.play();
     const newIsSession = !isSession;
@@ -67,15 +72,27 @@ function App() {
         <div id="break-container">
           <div id="break-label">Break Length</div>
           <div className="controls">
-            <button id="break-decrement" onClick={() =>
-              setSettings(prev => ({ ...prev, breakTime: Math.max(1, prev.breakTime - 1) }))
-            }>
+            <button
+              id="break-decrement"
+              onClick={() =>
+                setSettings(prev => ({ 
+                  ...prev, 
+                  breakTime: Math.max(1, prev.breakTime - 1) 
+                }))
+              }
+            >
               <FaArrowDown />
             </button>
             <div id="break-length">{settings.breakTime}</div>
-            <button id="break-increment" onClick={() =>
-              setSettings(prev => ({ ...prev, breakTime: Math.min(60, prev.breakTime + 1) }))
-            }>
+            <button
+              id="break-increment"
+              onClick={() =>
+                setSettings(prev => ({ 
+                  ...prev, 
+                  breakTime: Math.min(60, prev.breakTime + 1) 
+                }))
+              }
+            >
               <FaArrowUp />
             </button>
           </div>
@@ -83,15 +100,27 @@ function App() {
         <div id="session-container">
           <div id="session-label">Session Length</div>
           <div className="controls">
-            <button id="session-decrement" onClick={() =>
-              setSettings(prev => ({ ...prev, session: Math.max(1, prev.session - 1) }))
-            }>
+            <button
+              id="session-decrement"
+              onClick={() =>
+                setSettings(prev => ({ 
+                  ...prev, 
+                  session: Math.max(1, prev.session - 1) 
+                }))
+              }
+            >
               <FaArrowDown />
             </button>
             <div id="session-length">{settings.session}</div>
-            <button id="session-increment" onClick={() =>
-              setSettings(prev => ({ ...prev, session: Math.min(60, prev.session + 1) }))
-            }>
+            <button
+              id="session-increment"
+              onClick={() =>
+                setSettings(prev => ({ 
+                  ...prev, 
+                  session: Math.min(60, prev.session + 1) 
+                }))
+              }
+            >
               <FaArrowUp />
             </button>
           </div>
