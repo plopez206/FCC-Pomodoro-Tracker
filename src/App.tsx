@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import './App.css';
-import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaArrowUp, FaArrowDown } from 'react-icons/fa6'; // Usando los iconos estilizados de FontAwesome 6
 import 'bootstrap/dist/css/bootstrap.min.css';
 import beepSound from './assets/nokia_alarma.mp3';
 
@@ -28,12 +28,6 @@ function App() {
   };
 
   useEffect(() => {
-    if (!isRunning) {
-      setSecondsLeft(isSession ? settings.session * 60 : settings.breakTime * 60);
-    }
-  }, [settings, isSession, isRunning]);
-
-  useEffect(() => {
     if (isRunning) {
       intervalRef.current = window.setInterval(() => {
         setSecondsLeft(prev => {
@@ -59,67 +53,66 @@ function App() {
     };
   }, [isRunning, settings]);
 
-  const handleReset = () => {
-    setSettings({ session: 25, breakTime: 5 });
-    setSecondsLeft(25 * 60);
-    setIsRunning(false);
-    setIsSession(true);
-
-    beepAudio.current.pause();
-    beepAudio.current.currentTime = 0;
+  const handleSkip = () => {
+    beepAudio.current.play();
+    const newIsSession = !isSession;
+    setIsSession(newIsSession);
+    setSecondsLeft(newIsSession ? settings.session * 60 : settings.breakTime * 60);
   };
 
   return (
     <div id="app-container">
-      <div id="clock-container" className="row">
+      <div id="clock-container">
         <h1>Pomodoro Clock</h1>
-        <div id="break-container" className="row col-6">
-          <div id="break-label" className="col-12">Break Length</div>
-          <button id="break-decrement" className="btn col-4" onClick={() =>
-            setSettings(prev => ({ ...prev, breakTime: Math.max(1, prev.breakTime - 1) }))
-          }>
-            <FaArrowDown />
-          </button>
-          <div id="break-length" className="col-4">{settings.breakTime}</div>
-          <button id="break-increment" className="btn col-4" onClick={() =>
-            setSettings(prev => ({ ...prev, breakTime: Math.min(60, prev.breakTime + 1) }))
-          }>
-            <FaArrowUp />
-          </button>
-        </div>
-        <div id="session-container" className="row col-6">
-          <div id="session-label">Session Length</div>
-          <button id="session-decrement" className="btn col-4" onClick={() =>
-            setSettings(prev => ({ ...prev, session: Math.max(1, prev.session - 1) }))
-          }>
-            <FaArrowDown />
-          </button>
-          <div id="session-length" className="col-4">{settings.session}</div>
-          <button id="session-increment" className="btn col-4" onClick={() =>
-            setSettings(prev => ({ ...prev, session: Math.min(60, prev.session + 1) }))
-          }>
-            <FaArrowUp />
-          </button>
-        </div>
-        <div 
-          id="timer-container" 
-          className="col-12 row" 
-          style={{ backgroundColor: isSession ? '' : 'orange' }}
-        >
-          <div id="timer-label" className="col-12">{isSession ? "Session" : "Break"}</div>
-          <div 
-            id="time-left" 
-            style={{ color: secondsLeft <= 60 ? 'red' : '#333' }}
-          >
-            {formatTime(secondsLeft)}
+        <div id="break-container">
+          <div id="break-label">Break Length</div>
+          <div className="controls">
+            <button id="break-decrement" onClick={() =>
+              setSettings(prev => ({ ...prev, breakTime: Math.max(1, prev.breakTime - 1) }))
+            }>
+              <FaArrowDown />
+            </button>
+            <div id="break-length">{settings.breakTime}</div>
+            <button id="break-increment" onClick={() =>
+              setSettings(prev => ({ ...prev, breakTime: Math.min(60, prev.breakTime + 1) }))
+            }>
+              <FaArrowUp />
+            </button>
           </div>
         </div>
-        <div id="control-center" className="row">
-          <button id="start_stop" className="btn col-6" onClick={() => setIsRunning(prev => !prev)}>
+        <div id="session-container">
+          <div id="session-label">Session Length</div>
+          <div className="controls">
+            <button id="session-decrement" onClick={() =>
+              setSettings(prev => ({ ...prev, session: Math.max(1, prev.session - 1) }))
+            }>
+              <FaArrowDown />
+            </button>
+            <div id="session-length">{settings.session}</div>
+            <button id="session-increment" onClick={() =>
+              setSettings(prev => ({ ...prev, session: Math.min(60, prev.session + 1) }))
+            }>
+              <FaArrowUp />
+            </button>
+          </div>
+        </div>
+        <div
+          id="timer-container"
+          style={{ 
+            backgroundColor: isSession ? '#4DA8DA' : '#1ABC9C', 
+            border: `5px solid ${isRunning ? 'rgb(28,146,63)' : 'red'}`,
+            boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.2)'
+          }}
+        >
+          <div id="timer-label">{isSession ? "Session" : "Break"}</div>
+          <div id="time-left">{formatTime(secondsLeft)}</div>
+        </div>
+        <div id="control-center">
+          <button id="start_stop" className="start-btn" onClick={() => setIsRunning(prev => !prev)}>
             {isRunning ? 'Pause' : 'Start'}
           </button>
-          <button id="reset" className="btn col-6" onClick={handleReset}>
-            Reset
+          <button id="skip" className="skip-btn" onClick={handleSkip}>
+            Skip
           </button>
         </div>
       </div>
