@@ -117,7 +117,7 @@ function App() {
               onClick={() =>
                 setSettings(prev => ({ 
                   ...prev, 
-                  session: Math.min(60, prev.session + 1) 
+                  session: prev.session + 1 
                 }))
               }
             >
