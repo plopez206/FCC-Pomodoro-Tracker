@@ -87,3 +87,9 @@ button {
 .skip-btn:hover {
   background-color: #7F8C8D;
 }
+
+#session-decrement-5,
+#session-increment-5 {
+  margin: 0 8px;
+  font-size: 1.2em;
+}
