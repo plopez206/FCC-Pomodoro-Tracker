@@ -6,7 +6,7 @@ import {
   FaArrowDown, 
   FaAngleDoubleUp, 
   FaAngleDoubleDown 
-} from 'react-icons/fa6';
+} from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import beepSound from './assets/nokia_alarma.mp3';
 
